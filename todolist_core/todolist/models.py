@@ -15,7 +15,7 @@ class Task(models.Model):
 
     status = models.CharField(choices=STATUSES, default=STATUS_DRAFT, verbose_name='Статус', max_length=10)
     owner = models.CharField(max_length=50, default='admin', verbose_name='Владелец')
-    tags = models.ManyToManyField('todolist.Tag', verbose_name='теги',related_name='tasks')
+    tags = models.ManyToManyField('todolist.Tag', verbose_name='теги', related_name='tasks')
 
     due_data = models.DateTimeField(null=True, blank=True, verbose_name='Сроки выполненения')
 

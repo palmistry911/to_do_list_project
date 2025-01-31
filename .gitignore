@@ -7,6 +7,7 @@ todolist_core/celerybeat-schedule/
 htmlcov
 __pycache__
 todolist_core/.env/
+todolist_core/todolist_core/.env/
 todolist_core/todolist/__pycache__/
 todolist_core/todolist/migrations/
 todolist_core/todolist/__init__.py/

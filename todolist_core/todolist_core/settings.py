@@ -54,10 +54,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-kp2l&*htngm(5e*!@u166z4shlp66re*o(#cc^doqjnaffonbs')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -70,25 +70,49 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+INSTALLED_APPS += [
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
     'todolist',
-    'users',
-    'rest_framework_simplejwt',
-
+    'users'
 ]
 
 AUTH_USER_MODEL = 'users.User'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=240),  # Время жизни Access токена
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Время жизни Refresh токена
+    "ROTATE_REFRESH_TOKENS": False,  # Ротация Refresh токенов
+    "BLACKLIST_AFTER_ROTATION": False,  # Черный список после ротации
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",  # Алгоритм шифрования
+    "SIGNING_KEY": SECRET_KEY,  # Ключ для подписи
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),  # Тип заголовка для Auth
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=240),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
 }
 
 CACHES = {
@@ -101,10 +125,10 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'UTC'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -162,13 +186,17 @@ WSGI_APPLICATION = 'todolist_core.wsgi.application'
 
 
 DATABASES = {
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('mydatabase'),
-        'USER': config('postgres'),
-        'PASSWORD': config('261201'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default=5432, cast=int),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
 

@@ -1,13 +1,26 @@
 from django.contrib import admin
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.admin import UserAdmin
+from .forms import UserCreationForm
+from .models import User
 
 
-class CustomView(APIView):
-    permission_classes = [IsAuthenticated]
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    add_form = UserCreationForm
 
-    def get(self, request):
-        if request.user.is_staff:
-            return Response({'detail': 'Hello, staff!'})
-        return Response({'detail': 'Hello, user!'})
+    list_display = ('email', 'phone', 'first_name', 'last_name', 'is_admin')
+    list_filter = ('is_admin',)
+    fieldsets = (
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name', 'phone',)}),
+        ('Permissions', {'fields': ('is_admin', 'is_active')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password', 'first_name', 'last_name', 'phone',),
+        }),
+    )
+    ordering = ('email',)
+    filter_horizontal = ()
+

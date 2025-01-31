@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from .utils import get_cached_tags
-from .models import Task, Comment, Tag
+#from .utils import get_cached_tags
+from .models import Task, Comment, Tag, Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'color', ]
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -23,9 +29,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['id', 'name', 'description', 'tags']
+        fields = ['id', 'title', 'description', 'category', 'status', 'owner',
+                  'tags', 'is_active', 'due_date', 'comments_count', 'comments'
+                  ]
+        read_only_fields = ['owner']
 
     def get_tags(self, obj):
         tags = get_cached_tags(obj.id)
         return [tag.name for tag in tags]
-

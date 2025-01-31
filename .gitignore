@@ -1,7 +1,10 @@
-# created by virtualenv automatically
+
 .venv
-/db/*.sqlite3
-.env
+todolist_core/dbsqlite3/
+todolist_core/.coverage/
+todolist_core/celerybeat-schedule/
 .idea
 htmlcov
 __pycache__
+todolist_core/.env/
+

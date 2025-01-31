@@ -1,15 +1,19 @@
 from django.urls import path, include
+from .apps import TodolistConfig
 from rest_framework.routers import DefaultRouter
-from .views import TaskViewSet, TagViewSet, CommentListCreateAPIView, CommentRetrieveUpdateDestroyAPIView
-
-router = DefaultRouter()
-router.register(r'tasks', TaskViewSet)
-router.register(r'tags', TagViewSet)
+from .views import (
+    CategoryViewSet,
+    TaskViewSet,
+    CommentViewSet,
+)
 
 app_name = 'todolist'
 
-urlpatterns = [
-    path('', include(router.urls)),
-    path('comments/', CommentListCreateAPIView.as_view()),
-    path('comments/<int:pk>/', CommentRetrieveUpdateDestroyAPIView.as_view()),
-]
+urlpatterns = []
+
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet, basename='category')
+router.register(r'tasks', TaskViewSet, basename='task')
+router.register(r'comments', CommentViewSet, basename='comment')
+
+urlpatterns += router.urls
